@@ -9,9 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './labs.component.scss',
 })
 export class LabsComponent {
-  tasks = [
-    { title: 'Task 1', description: 'Description 1' },
-    { title: 'Task 2', description: 'Description 2' },
-    { title: 'Task 3', description: 'Description 3' },
-  ];
+
 }
