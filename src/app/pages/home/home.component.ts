@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
+import { ITask } from '../../models/tasks.model';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,7 @@ import { Component, signal } from '@angular/core';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  tasks = signal([
+  tasks = signal<ITask[]>([
     { title: 'Task 1', description: 'Description 1' },
     { title: 'Task 2', description: 'Description 2' },
     { title: 'Task 3', description: 'Description 3' },
