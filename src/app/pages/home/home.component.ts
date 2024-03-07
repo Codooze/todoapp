@@ -1,26 +1,53 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { ITask } from '../../models/tasks.model';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  changeTask() {
+    if (this.newTaskCtrl.valid) {
+      this.addTask('New Task', this.newTaskCtrl.value);
+      this.newTaskCtrl.reset();
+    }
+  }
   tasks = signal<ITask[]>([
-    { title: 'Task 1', description: 'Description 1' },
-    { title: 'Task 2', description: 'Description 2' },
-    { title: 'Task 3', description: 'Description 3' },
+    { title: 'Task 1', description: 'Description 1', isEditing: false },
+    { title: 'Task 2', description: 'Description 2', isEditing: false },
+    { title: 'Task 3', description: 'Description 3', isEditing: false },
   ]);
 
   addTask(title: string = 'Default Title', description: string) {
-    this.tasks.update((tasks) => [...tasks, { title, description }]);
+    this.tasks.update((tasks) => [
+      ...tasks,
+      { title, description, isEditing: false },
+    ]);
   }
 
   removeTask(index: number) {
     this.tasks.update((tasks) => tasks.filter((_, i) => i !== index));
   }
+
+  updateTask(index: number, title: string, description: string) {
+    this.tasks.update((tasks) =>
+      tasks.map((task, i) =>
+        i === index ? { title, description, isEditing: task.isEditing } : task
+      )
+    );
+  }
+
+  getInputValue(event: Event): string {
+    return (event.target as HTMLInputElement).value;
+  }
+
+  newTaskCtrl = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.pattern(/^\S.*\S$/)],
+  });
 }

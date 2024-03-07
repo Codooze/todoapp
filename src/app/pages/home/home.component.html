@@ -18,6 +18,14 @@
         #description
       />
 
+      <!-- otra forma de añadir tasks -->
+      <input
+        type="text"
+        class="new-todo"
+        placeholder="new todo usando formControl"
+        [formControl]="newTaskCtrl"
+        (keydown.enter)="changeTask()"
+      />
       <button (click)="addTask(title.value, description.value)">
         Add Task
       </button>
@@ -30,10 +38,20 @@
         <li *ngFor="let task of tasks(); let i = index">
           <div class="view">
             <input class="toggle" type="checkbox" />
-            <label>{{ task.title }} | {{ task.description }}</label>
+            <div>
+              <input
+                type="text"
+                [value]="task.title"
+                (blur)="updateTask(i, getInputValue($event), task.description)"
+              />
+              <input
+                type="text"
+                [value]="task.description"
+                (blur)="updateTask(i, task.title, getInputValue($event))"
+              />
+            </div>
             <button class="destroy" (click)="removeTask(i)"></button>
           </div>
-          <input class="edit" value="Buy a unicorn" />
         </li>
         <li class="completed">
           <div class="view">

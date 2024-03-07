@@ -1,6 +1,4 @@
 <p>labs works!</p>
-
-<!-- Path: src/app/pages/tasks/tasks.component.html -->
-<ul>
-  <!-- <li *ngFor="let task of tasks">{{ task.title }} 🚀 {{ task.description }}</li> -->
-</ul>
+<!-- Reaccionar a cambios usando formControl -->
+<input type="color" [formControl]="colorControl" />
+<p>{{ colorControl.value }}</p>
