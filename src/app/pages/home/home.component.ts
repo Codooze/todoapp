@@ -11,22 +11,55 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  updateTaskStatus(i: number, status: boolean) {
+    this.tasks.update((tasks) =>
+      tasks.map((task, index) =>
+        index === i
+          ? {
+              ...task,
+              completed: status,
+            }
+          : task
+      )
+    );
+  }
   changeTask() {
     if (this.newTaskCtrl.valid) {
       this.addTask('New Task', this.newTaskCtrl.value);
       this.newTaskCtrl.reset();
     }
   }
+
   tasks = signal<ITask[]>([
-    { title: 'Task 1', description: 'Description 1', isEditing: false },
-    { title: 'Task 2', description: 'Description 2', isEditing: false },
-    { title: 'Task 3', description: 'Description 3', isEditing: false },
+    {
+      title: 'Task 1',
+      description: 'Description 1',
+      isEditing: false,
+      completed: false,
+    },
+    {
+      title: 'Task 2',
+      description: 'Description 2',
+      isEditing: false,
+      completed: false,
+    },
+    {
+      title: 'Task 3',
+      description: 'Description 3',
+      isEditing: false,
+      completed: false,
+    },
   ]);
 
   addTask(title: string = 'Default Title', description: string) {
     this.tasks.update((tasks) => [
       ...tasks,
-      { title, description, isEditing: false },
+      {
+        title,
+        description,
+        isEditing: false,
+        completed: false,
+      },
     ]);
   }
 
@@ -37,7 +70,14 @@ export class HomeComponent {
   updateTask(index: number, title: string, description: string) {
     this.tasks.update((tasks) =>
       tasks.map((task, i) =>
-        i === index ? { title, description, isEditing: task.isEditing } : task
+        i === index
+          ? {
+              title,
+              description,
+              isEditing: task.isEditing,
+              completed: task.completed,
+            }
+          : task
       )
     );
   }

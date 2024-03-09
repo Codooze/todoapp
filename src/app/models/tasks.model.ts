@@ -1,5 +1,6 @@
 export interface ITask {
   title: string;
   description: string;
+  completed: boolean;
   isEditing: boolean;
 }
