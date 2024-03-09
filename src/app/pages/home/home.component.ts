@@ -11,6 +11,21 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  editTask(index: number) {
+    this.tasks.update((tasks) =>
+      tasks.map((task, i) =>
+        i === index
+          ? {
+              ...task,
+              isEditing: true,
+            }
+          : {
+              ...task,
+              isEditing: false,
+            }
+      )
+    );
+  }
   updateTaskStatus(i: number, status: boolean) {
     this.tasks.update((tasks) =>
       tasks.map((task, index) =>
