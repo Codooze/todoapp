@@ -4,3 +4,9 @@ export interface ITask {
   completed: boolean;
   isEditing: boolean;
 }
+
+export enum FilterOptions {
+  all = 'All',
+  pending = 'Pending',
+  completed = 'Completed',
+}

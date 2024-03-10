@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { ITask } from '../../models/tasks.model';
+import { Component, computed, signal } from '@angular/core';
+import { ITask, FilterOptions } from '../../models/tasks.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -11,6 +11,50 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  tasks = signal<ITask[]>([
+    {
+      title: 'Task 1',
+      description: 'Description 1',
+      isEditing: false,
+      completed: false,
+    },
+    {
+      title: 'Task 2',
+      description: 'Description 2',
+      isEditing: false,
+      completed: false,
+    },
+    {
+      title: 'Task 3',
+      description: 'Description 3',
+      isEditing: false,
+      completed: false,
+    },
+  ]);
+
+  //enum with the filter options all, pending, completed
+  Filters = FilterOptions;
+  currentFilter = signal(FilterOptions.all);
+
+  tasksByFilter = computed(() => {
+    const tasks = this.tasks();
+    const filter = this.currentFilter();
+    switch (filter) {
+      case FilterOptions.all:
+        return tasks;
+      case FilterOptions.pending:
+        return tasks.filter((task) => !task.completed);
+      case FilterOptions.completed:
+        return tasks.filter((task) => task.completed);
+      default:
+        return tasks;
+    }
+  });
+
+  changeFilter(filter: FilterOptions) {
+    this.currentFilter.set(filter);
+  }
+
   editTask(index: number) {
     this.tasks.update((tasks) =>
       tasks.map((task, i) =>
@@ -44,27 +88,6 @@ export class HomeComponent {
       this.newTaskCtrl.reset();
     }
   }
-
-  tasks = signal<ITask[]>([
-    {
-      title: 'Task 1',
-      description: 'Description 1',
-      isEditing: false,
-      completed: false,
-    },
-    {
-      title: 'Task 2',
-      description: 'Description 2',
-      isEditing: false,
-      completed: false,
-    },
-    {
-      title: 'Task 3',
-      description: 'Description 3',
-      isEditing: false,
-      completed: false,
-    },
-  ]);
 
   addTask(title: string = 'Default Title', description: string) {
     this.tasks.update((tasks) => [
