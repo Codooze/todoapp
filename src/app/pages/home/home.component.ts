@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ITask, FilterOptions } from '../../models/tasks.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -11,26 +18,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  tasks = signal<ITask[]>([
-    {
-      title: 'Task 1',
-      description: 'Description 1',
-      isEditing: false,
-      completed: false,
-    },
-    {
-      title: 'Task 2',
-      description: 'Description 2',
-      isEditing: false,
-      completed: false,
-    },
-    {
-      title: 'Task 3',
-      description: 'Description 3',
-      isEditing: false,
-      completed: false,
-    },
-  ]);
+  tasks = signal<ITask[]>([]);
 
   //enum with the filter options all, pending, completed
   Filters = FilterOptions;
@@ -52,6 +40,8 @@ export class HomeComponent {
   });
 
   changeFilter(filter: FilterOptions) {
+    console.log('filter', filter);
+
     this.currentFilter.set(filter);
   }
 
@@ -128,4 +118,24 @@ export class HomeComponent {
     nonNullable: true,
     validators: [Validators.required, Validators.pattern(/^\S.*\S$/)],
   });
+
+  // LocalStorage
+  injector = inject(Injector);
+
+  ngOnInit() {
+    const tasks = localStorage.getItem('tasks');
+    if (tasks) {
+      this.tasks.set(JSON.parse(tasks));
+    }
+    this.trackTasks();
+  }
+
+  trackTasks() {
+    effect(
+      () => {
+        localStorage.setItem('tasks', JSON.stringify(this.tasks()));
+      },
+      { injector: this.injector }
+    );
+  }
 }
